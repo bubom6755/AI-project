@@ -52,6 +52,7 @@ window.onload = () => {
       this.score = 0;
       this.gameOver = false;
       this.collectedItems = { bottles: 0, straws: 0, nets: 0 };
+      this.spawnedItems = { bottles: 0, straws: 0, nets: 0 }; // Track spawned items
     }
 
     preload() {
@@ -75,7 +76,7 @@ window.onload = () => {
       hideGameOverModal();
 
       this.player = this.physics.add.sprite(400, 500, "turtle");
-      this.player.setCollideWorldBounds(true).setScale(0.3); // Increased scale
+      this.player.setCollideWorldBounds(true).setScale(0.2); // Uniform smaller scale
 
       this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -106,10 +107,25 @@ window.onload = () => {
         callbackScope: this,
       });
 
-      // Spawn the required collectibles once
-      this.spawnRequiredItems();
-
-      // Spawn obstacles periodically
+      // Spawn collectibles and obstacles periodically
+      this.time.addEvent({
+        delay: 2500,
+        callback: this.trySpawnBottle,
+        loop: true,
+        callbackScope: this,
+      });
+      this.time.addEvent({
+        delay: 3500,
+        callback: this.trySpawnStraw,
+        loop: true,
+        callbackScope: this,
+      });
+      this.time.addEvent({
+        delay: 8000,
+        callback: this.trySpawnNet,
+        loop: true,
+        callbackScope: this,
+      });
       this.time.addEvent({
         delay: 2000,
         callback: this.spawnFish,
@@ -180,13 +196,25 @@ window.onload = () => {
       ui.timer.innerText = remaining > 0 ? remaining : 0;
     }
 
-    spawnRequiredItems() {
-      // Spawn 3 bottles, 3 straws, 1 net at random positions
-      for (let i = 0; i < 3; i++) {
-        this.spawnAnItem("bottle", this.collectibles, true);
-        this.spawnAnItem("straw", this.collectibles, true);
+    trySpawnBottle() {
+      if (this.spawnedItems.bottles < 3) {
+        this.spawnAnItem("bottle", this.collectibles);
+        this.spawnedItems.bottles++;
       }
-      this.spawnAnItem("net", this.collectibles, true);
+    }
+
+    trySpawnStraw() {
+      if (this.spawnedItems.straws < 3) {
+        this.spawnAnItem("straw", this.collectibles);
+        this.spawnedItems.straws++;
+      }
+    }
+
+    trySpawnNet() {
+      if (this.spawnedItems.nets < 1) {
+        this.spawnAnItem("net", this.collectibles);
+        this.spawnedItems.nets++;
+      }
     }
 
     spawnFish() {
@@ -195,7 +223,7 @@ window.onload = () => {
       const speed =
         (Math.random() < 0.5 ? 1 : -1) * Phaser.Math.Between(100, 250);
       const fish = this.obstacles.create(x, y, "fish");
-      fish.setVelocityX(speed).setScale(0.2).setImmovable(true); // Increased scale
+      fish.setVelocityX(speed).setScale(0.15).setImmovable(true); // Uniform smaller scale
       if (speed > 0) {
         fish.flipX = true;
       }
@@ -203,17 +231,17 @@ window.onload = () => {
 
     spawnSeaweed() {
       const x = Phaser.Math.Between(50, 750);
-      this.obstacles.create(x, 650, "seaweed").setVelocityY(-90).setScale(0.35); // Increased scale
+      this.obstacles.create(x, 650, "seaweed").setVelocityY(-90).setScale(0.25); // Uniform smaller scale
     }
 
-    spawnAnItem(type, group, isQuestItem = false) {
+    spawnAnItem(type, group) {
       const x = Phaser.Math.Between(50, 750);
-      const y = Phaser.Math.Between(50, 400);
+      const y = Phaser.Math.Between(0, 150);
       const item = group.create(x, y, type);
-      item.setData("type", type).setScale(0.4); // Increased scale
-      if (!isQuestItem) {
-        item.setVelocityY(Phaser.Math.Between(30, 60));
-      }
+      item
+        .setData("type", type)
+        .setScale(0.2) // Uniform smaller scale
+        .setVelocity(Phaser.Math.Between(-20, 20), Phaser.Math.Between(40, 80)); // Add slight drift
     }
 
     collectItem(player, item) {
