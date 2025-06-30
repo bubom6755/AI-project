@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tortue vs Plastique</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+</head>
+<body>
+    <div id="content">
+        <header>
+            <h1>Tortue vs Plastique</h1>
+            <p class="intro-text">
+                Bienvenue dans les nageoires de Patrick la tortue qui transforme les déchets en haute couture sous-marine…
+            </p>
+        </header>
+
+        <main>
+            <div id="game-container"></div>
+            <div id="ui-container">
+                <div class="ui-element">Score: <span id="score">0</span></div>
+                <div id="progression-tracker">
+                    <div class="tracker-item">
+                        <img id="prog-bottle-1" src="assets/img/bottle.png" alt="Bouteille 1">
+                        <img id="prog-bottle-2" src="assets/img/bottle.png" alt="Bouteille 2">
+                        <img id="prog-bottle-3" src="assets/img/bottle.png" alt="Bouteille 3">
+                    </div>
+                     <div class="tracker-item">
+                        <img id="prog-straw-1" src="assets/img/straw1.png" alt="Paille 1">
+                        <img id="prog-straw-2" src="assets/img/straw1.png" alt="Paille 2">
+                        <img id="prog-straw-3" src="assets/img/straw1.png" alt="Paille 3">
+                    </div>
+                     <div class="tracker-item">
+                        <img id="prog-net-1" src="assets/img/net.png" alt="Filet 1">
+                    </div>
+                </div>
+                <div class="ui-element">Temps: <span id="timer">30</span>s</div>
+            </div>
+             <div id="global-counter">
+                Plastique retiré des océans depuis le lancement du site : <span id="plastic-count">0</span> objets
+            </div>
+        </main>
+
+        <div id="game-over-modal">
+            <div class="modal-content">
+                <h2>Temps écoulé !</h2>
+                <p>Malgré son look stylé, Patrick préfèrerait un océan sans plastique...</p>
+                <p>Votre score : <span id="final-score">0</span></p>
+                <button id="restart-button">Rejouer</button>
+                <a href="education.html" id="learn-more-button">En savoir plus</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html> 
