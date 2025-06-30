@@ -66,7 +66,7 @@ window.onload = () => {
     }
 
     create() {
-      // Create a dynamic background
+      // Create a dynamic background that fills the container
       this.createOceanBackground();
 
       // Reset UI and hide modal
@@ -76,7 +76,7 @@ window.onload = () => {
       hideGameOverModal();
 
       this.player = this.physics.add.sprite(400, 500, "turtle");
-      this.player.setCollideWorldBounds(true).setScale(0.2); // Uniform smaller scale
+      this.player.setCollideWorldBounds(true).setScale(0.12); // Further reduced scale
 
       this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -141,10 +141,18 @@ window.onload = () => {
     }
 
     createOceanBackground() {
+      const width = this.game.config.width;
+      const height = this.game.config.height;
+
       const graphics = this.add.graphics();
-      // Draw a top-to-bottom gradient
       graphics.fillGradientStyle(0x00b8d4, 0x00b8d4, 0x005a9e, 0x005a9e, 1);
-      graphics.fillRect(0, 0, this.game.config.width, this.game.config.height);
+      graphics.fillRect(0, 0, width, height);
+      // Generate a texture from the graphics object
+      graphics.generateTexture("ocean_bg", width, height);
+      graphics.destroy(); // Clean up the graphics object
+
+      // Add the generated texture as a background image
+      this.add.image(0, 0, "ocean_bg").setOrigin(0, 0);
 
       // Create a dynamic bubble texture
       const bubbleGraphics = this.make.graphics({ x: 0, y: 0 }, false);
@@ -231,16 +239,22 @@ window.onload = () => {
 
     spawnSeaweed() {
       const x = Phaser.Math.Between(50, 750);
-      this.obstacles.create(x, 650, "seaweed").setVelocityY(-90).setScale(0.25); // Uniform smaller scale
+      this.obstacles.create(x, 650, "seaweed").setVelocityY(-90).setScale(0.2); // Adjusted scale
     }
 
     spawnAnItem(type, group) {
       const x = Phaser.Math.Between(50, 750);
       const y = Phaser.Math.Between(0, 150);
       const item = group.create(x, y, type);
+
+      let scale = 0.15; // Default item scale
+      if (type === "straw") {
+        scale = 0.1; // Make straws even smaller
+      }
+
       item
         .setData("type", type)
-        .setScale(0.2) // Uniform smaller scale
+        .setScale(scale)
         .setVelocity(Phaser.Math.Between(-20, 20), Phaser.Math.Between(40, 80)); // Add slight drift
     }
 
