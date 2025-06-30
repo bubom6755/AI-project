@@ -148,15 +148,10 @@ window.onload = () => {
       const width = this.game.config.width;
       const height = this.game.config.height;
 
+      // Draw the gradient directly
       const graphics = this.add.graphics();
       graphics.fillGradientStyle(0x00b8d4, 0x00b8d4, 0x005a9e, 0x005a9e, 1);
       graphics.fillRect(0, 0, width, height);
-      // Generate a texture from the graphics object
-      graphics.generateTexture("ocean_bg", width, height);
-      graphics.destroy(); // Clean up the graphics object
-
-      // Add the generated texture as a background image
-      this.add.image(0, 0, "ocean_bg").setOrigin(0, 0);
 
       // Create a dynamic bubble texture
       const bubbleGraphics = this.make.graphics({ x: 0, y: 0 }, false);
@@ -290,6 +285,9 @@ window.onload = () => {
     }
 
     hitObstacle(player, obstacle) {
+      if (this.gameOver) return;
+      if (this.isInvincible) return;
+
       obstacle.disableBody(true, true);
       this.score -= 10;
       ui.score.innerText = this.score;
