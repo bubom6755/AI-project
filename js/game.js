@@ -7,6 +7,7 @@ window.onload = () => {
     finalScore: document.getElementById("final-score"),
     restartButton: document.getElementById("restart-button"),
     plasticCount: document.getElementById("plastic-count"),
+    lives: document.getElementById("lives"),
     progression: {
       bottles: [
         document.getElementById("prog-bottle-1"),
@@ -50,6 +51,8 @@ window.onload = () => {
     // Initialize variables
     init() {
       this.score = 0;
+      this.lives = 3;
+      this.isInvincible = false;
       this.gameOver = false;
       this.collectedItems = { bottles: 0, straws: 0, nets: 0 };
       this.spawnedItems = { bottles: 0, straws: 0, nets: 0 }; // Track spawned items
@@ -71,6 +74,7 @@ window.onload = () => {
 
       // Reset UI and hide modal
       this.updateProgressionUI(); // Reset UI to grayscale
+      this.updateLivesUI();
       ui.score.innerText = "0";
       ui.timer.innerText = "30";
       hideGameOverModal();
@@ -294,6 +298,32 @@ window.onload = () => {
       this.cameras.main.shake(100, 0.01);
       player.setTint(0xff0000);
       this.time.addEvent({ delay: 200, callback: () => player.clearTint() });
+
+      this.isInvincible = true;
+      this.lives--;
+      this.updateLivesUI();
+
+      // Flicker effect
+      this.tweens.add({
+        targets: player,
+        alpha: 0.5,
+        ease: "Cubic.easeOut",
+        duration: 150,
+        repeat: 4,
+        yoyo: true,
+        onComplete: () => {
+          player.alpha = 1;
+          this.isInvincible = false;
+        },
+      });
+
+      if (this.lives <= 0) {
+        this.endGame();
+      }
+    }
+
+    updateLivesUI() {
+      ui.lives.innerText = "♥ ".repeat(this.lives);
     }
 
     updateProgressionUI() {
@@ -316,6 +346,7 @@ window.onload = () => {
     }
 
     endGame() {
+      if (this.gameOver) return; // Prevent multiple calls
       this.gameOver = true;
       this.physics.pause();
       this.player.setTint(0xff0000);

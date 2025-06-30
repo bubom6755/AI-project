@@ -74,6 +74,11 @@ header {
     transition: all 0.3s ease;
 }
 
+#lives {
+    color: #FF4500; /* A reddish color for hearts */
+    letter-spacing: 3px;
+}
+
 .tracker-item img.collected {
     filter: grayscale(0%);
     opacity: 1;
